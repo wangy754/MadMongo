@@ -1,11 +1,13 @@
 import pymongo
 from pymongo import MongoClient
 
-def main():
 
-    client = MongoClient('localhost',27017)
-    db = client.project
-    testcoll = db.testcoll
+def main():
+    # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
+    # mongos port. Use the port number your mongos is running on
+    client = MongoClient('54.219.174.228',port=27017)
+    db = client.BusdataDB
+    testcoll = db.NYBusInfo
     
     more_input = True
 
@@ -36,7 +38,7 @@ def main():
             VehicleRef = input("Enter Vehicle Ref: ")
             print("Getting data for " + VehicleRef)
                   # call function 1
-            test_post = testColl.find_one({'VehicleRef':VehicleRef},{'OriginName':1,'DestinationName':1})
+            test_post = testcoll.find_one({'VehicleRef':VehicleRef},{'OriginName':1,'DestinationName':1})
             print(test_post)
 
         elif expression == '2':
