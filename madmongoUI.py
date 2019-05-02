@@ -32,6 +32,8 @@ def main():
                             "Enter 8: Delete Observation\n"
                            
                             "Enter 9: Find buses that begin at a particular longitude/latitude\n"
+                           
+                            "Enter 10: Find buses that go through a particular stop point \n"
 
                             "Enter q: Exiting\n")
 
@@ -117,6 +119,12 @@ def main():
             longitude = input("Enter Longitude: ")
 
             print("Fetching Buses originating at "+latitude+"and "+longitude)
+
+        elif expression == '10':
+            stop_name = input("Please enter the stop name: ")
+            print("Fetching details of the buses passing through the point "+ stop_name)
+            result = testcoll.distinct("PublishedLineName",{"NextStopPointName" : stop_name})
+            print(result)
 
 
         elif expression == 'q':
