@@ -5,7 +5,7 @@ from pymongo import MongoClient
 def main():
     # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
     # mongos port. Use the port number your mongos is running on
-    client = MongoClient('54.219.174.228',port=27017)
+    client = MongoClient('13.52.104.120',port=27017)
     db = client.BusdataDB
     testcoll = db.NYBusInfo
     
@@ -30,11 +30,14 @@ def main():
                             "Enter 7: Modify Observation\n"
                             
                             "Enter 8: Delete Observation\n"
+                           
+                            "Enter 9: Find buses that begin at a particular longitude/latitude\n"
 
                             "Enter q: Exiting\n")
 
         if expression ==  '1':
             #Input: VehicleRef (string) Output: OriginName (string) and DestinationName (string)
+            #Find the bus termini of a given vehicle’s ID
             VehicleRef = input("Enter Vehicle Ref: ")
             print("Getting data for " + VehicleRef)
                   # call function 1
@@ -43,28 +46,37 @@ def main():
 
         elif expression == '2':
             #Input: DestinationName (string) Output: VehicleRef (string) or PublishedLineName (string)
+            #Find buses that end at a particular destination or Find buses for a particular destination
             DestinationName = input("Enter destination: ")
-            print("Getting data for " + DestinationName)          
+            print("Getting data for " + DestinationName)
+            test_post = testcoll.distinct("PublishedLineName", {"DestinationName": DestinationName})
+            print(test_post)
                   # call function 2
 
         elif expression == '3':
             #Input: PublishedLineName (string) Output: OriginName (string) and DestinationName (string)
+            # Find route (origin and destination) by line name
             PublishedLineName = input("Enter line name: ")
-            print("Getting data for " + PublishedLineName)    
+            print("Getting data for " + PublishedLineName)
+            test_post = testcoll.find_one({"PublishedLineName":PublishedLineName},{'OriginName':1,'DestinationName':1})
+            print(test_post)
                  #call function 3
  
         elif expression == '4':
             #Input: OriginName (string) Output: VehicleRef (string) or PublishedLineName (string)
             OriginName = input("Enter a station name: ")
-            print("Getting data for " + OriginName)    
-                  # call function 4
+            print("Getting data for " + OriginName)
+            test_post = testcoll.distinct("PublishedLineName", {"DestinationName" : OriginName})
+            print(test_post)
 
         elif expression == '5':
             #Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
             StartName = input("Enter starting station: ")
             DestinationName = input("Enter destination: ")
             print("Getting data for lines from " + StartName+ " to " + DestinationName)   
-                  # call function 5
+            test_post = testcoll.distinct("PublishedLineName", {"$and":[{"OriginName" : StartName},
+                                                                        {"DestinationName" : DestinationName}]})
+            print(test_post)
                   
         elif expression == '6':
             #Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
@@ -99,6 +111,13 @@ def main():
             deleted = testcoll.delete_one(deletedict)
             print("Done!")
                   # call function 6
+
+        elif expression == '9':
+            latitude = input("Enter Latitude: ")
+            longitude = input("Enter Longitude: ")
+
+            print("Fetching Buses originating at "+latitude+"and "+longitude)
+
 
         elif expression == 'q':
 
