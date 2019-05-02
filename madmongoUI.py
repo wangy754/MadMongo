@@ -66,7 +66,7 @@ def main():
             #Input: OriginName (string) Output: VehicleRef (string) or PublishedLineName (string)
             OriginName = input("Enter a station name: ")
             print("Getting data for " + OriginName)
-            test_post = testcoll.distinct("PublishedLineName", {"DestinationName" : OriginName})
+            test_post = testcoll.distinct("PublishedLineName", {"OriginName" : OriginName})
             print(test_post)
 
         elif expression == '5':
