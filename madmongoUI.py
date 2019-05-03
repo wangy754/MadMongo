@@ -118,9 +118,14 @@ def main():
         elif expression == '9':
             latitude = input("Enter Latitude: ")
             longitude = input("Enter Longitude: ")
+            x = float(latitude)
+            y= float(longitude)
 
             print("Fetching Buses originating at "+latitude+"and "+longitude)
 
+            test_post = testcoll.find_one({"OriginLat": x, "OriginLong": y },{'OriginName':1,'DestinationName':1})
+            print(test_post)
+            
         elif expression == '10':
             stop_name = input("Please enter the stop name: ")
             print("Fetching details of the buses passing through the point "+ stop_name)
