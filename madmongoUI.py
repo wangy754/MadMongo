@@ -5,7 +5,7 @@ from pymongo import MongoClient
 def main():
     # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
     # mongos port. Use the port number your mongos is running on
-    client = MongoClient('13.52.104.120',port=27017)
+    client = MongoClient('54.183.244.77',port=27017)
     db = client.BusdataDB
     testcoll = db.NYBusInfo
     
@@ -34,6 +34,8 @@ def main():
                             "Enter 9: Find buses that begin at a particular longitude/latitude\n"
                            
                             "Enter 10: Find buses that go through a particular stop point \n"
+                           
+                            "Enter 11: Find the recent location of the bus with the given line name \n"
 
                             "Enter q: Exiting\n")
 
@@ -42,7 +44,6 @@ def main():
             #Find the bus termini of a given vehicle’s ID
             VehicleRef = input("Enter Vehicle Ref: ")
             print("Getting data for " + VehicleRef)
-                  # call function 1
             test_post = testcoll.find_one({'VehicleRef':VehicleRef},{'OriginName':1,'DestinationName':1})
             print(test_post)
 
@@ -126,6 +127,11 @@ def main():
             result = testcoll.distinct("PublishedLineName",{"NextStopPointName" : stop_name})
             print(result)
 
+        elif expression == '11':
+            line_name = input("Enter the published line name of the bus: ")
+            print("Fetching the recent location of the bus "+line_name)
+            result = testcoll.find({"PublishedLineName":line_name},{"VehicleLocation":1}).sort([("RecordedAtTime",-1)]).limit(1)
+            print(result[0])
 
         elif expression == 'q':
 
