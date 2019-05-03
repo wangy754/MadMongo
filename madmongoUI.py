@@ -33,9 +33,11 @@ def main():
                            
                             "Enter 9: Find buses that begin at a particular longitude/latitude\n"
                            
-                            "Enter 10: Find buses that go through a particular stop point \n"
+                            "Enter 10: Find buses that begin at a particular longitude/latitude\n"
                            
-                            "Enter 11: Find the recent location of the bus with the given line name \n"
+                            "Enter 11: Find buses that go through a particular stop point \n"
+                           
+                            "Enter 12: Find the recent location of the bus with the given line name \n"
 
                             "Enter 17: Find the number of observations near a particular latitude \n"
                            
@@ -128,14 +130,25 @@ def main():
 
             test_post = testcoll.find_one({"OriginLat": x, "OriginLong": y },{'PublishedLineName':1, 'OriginName':1,'DestinationName':1})
             print(test_post)
-            
+
         elif expression == '10':
+            latitude = input("Enter Latitude: ")
+            longitude = input("Enter Longitude: ")
+            x = float(latitude)
+            y= float(longitude)
+
+            print("Fetching Buses with destination at "+latitude+"and "+longitude)
+
+            test_post = testcoll.find_one({"DestinationLat": x, "DestinationLong": y },{'PublishedLineName':1, 'OriginName':1,'DestinationName':1})
+            print(test_post)
+            
+        elif expression == '11':
             stop_name = input("Please enter the stop name: ")
             print("Fetching details of the buses passing through the point "+ stop_name)
             result = testcoll.distinct("PublishedLineName",{"NextStopPointName" : stop_name})
             print(result)
 
-        elif expression == '11':
+        elif expression == '12':
             line_name = input("Enter the published line name of the bus: ")
             print("Fetching the recent location of the bus "+line_name)
             result = testcoll.find({"PublishedLineName":line_name},{"VehicleLocation":1}).sort([("RecordedAtTime",-1)]).limit(1)
