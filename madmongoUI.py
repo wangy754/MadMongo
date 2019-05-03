@@ -37,6 +37,9 @@ def main():
                            
                             "Enter 11: Find the recent location of the bus with the given line name \n"
 
+                            "Enter 17: Find the number of observations near a particular latitude \n"
+                           
+
                             "Enter q: Exiting\n")
 
         if expression ==  '1':
@@ -137,6 +140,14 @@ def main():
             print("Fetching the recent location of the bus "+line_name)
             result = testcoll.find({"PublishedLineName":line_name},{"VehicleLocation":1}).sort([("RecordedAtTime",-1)]).limit(1)
             print(result[0])
+
+
+        elif expression == '17':
+            line_name = input("Enter the published line name of the bus: ")
+            print("Fetching data for latitude "+line_name)
+            result = testcoll.find({"PublishedLineName":line_name}).sort([("RecordedAtTime",-1)])
+            for doc in result:
+                print(doc) 
 
         elif expression == 'q':
 
