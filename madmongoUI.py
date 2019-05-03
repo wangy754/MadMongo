@@ -123,7 +123,7 @@ def main():
 
             print("Fetching Buses originating at "+latitude+"and "+longitude)
 
-            test_post = testcoll.find_one({"OriginLat": x, "OriginLong": y },{'OriginName':1,'DestinationName':1})
+            test_post = testcoll.find_one({"OriginLat": x, "OriginLong": y },{'PublishedLineName':1, 'OriginName':1,'DestinationName':1})
             print(test_post)
             
         elif expression == '10':
