@@ -40,6 +40,8 @@ def main():
                            "Enter 12: Find the recent location of the bus with the given line name \n"
 
                            "Enter 13: Find the recent location of the bus with the given Vehicle ID \n"
+                           
+                           "Enter 14: View history of a given line name \n"
 
                            "Enter 17: Find the number of observations near a particular latitude \n"
 
@@ -188,6 +190,20 @@ def main():
             print("Fetching the recent location of the bus " + v_id)
             result = testcoll.find({"VehicleRef": v_id}, {"VehicleLocation": 1}).sort([("RecordedAtTime", -1)]).limit(1)
             print("The recent location of the bus with vehicle id: " + v_id + " is: " + str(result[0]['VehicleLocation']))
+            
+        elif expression ==  '14':
+            LineName = input("Enter Line Name: ")
+            NumEntries = int(input("Enter number of entries to view: "))
+            print("Getting history for " + LineName)
+            test_post = testcoll.find({'PublishedLineName':LineName},{'RecordedAtTime':1,'VehicleLocationLatitude':1,'VehicleLocationLongitude':1,'NextStopPointName':1,'ExpectedArrivalTime':1}).sort('RecordedAtTime',pymongo.DESCENDING).limit(NumEntries)
+            i = 1
+            for post in test_post:
+                print("Entry " + str(i))
+                print("Recorded at: " + post["RecordedAtTime"])
+                print("Located at: (" + post["VehicleLocationLatitude"] + "," + post["VehicleLocationLongitude"] + ")")
+                print("Next Stop at: " + post["NextStopPointName"])
+                print("Expected Arrival at: " + str(post["ExpectedArrivalTime"]))
+                i += 1
 
         elif expression == '17':
             line_name = input("Enter the published line name of the bus: ")
