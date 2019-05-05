@@ -133,11 +133,11 @@ def main():
 
         elif expression == '8':
             # Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
-            column1 = input("Enter value for column 1: ")
-            column2 = input("Enter value for column 2: ")
-            column3 = input("Enter value for column 3: ")
-            print("Deleting documents with values " + column1 + " , " + column2 + " , " + column3)
-            deletedict = {"column1": column1, "column2": column2, "column3": column3}
+            origin = input("Enter value for OriginName: ")
+            destination = input("Enter value for DestinationName: ")
+            line = input("Enter value for PublishedLineName: ")
+            print("Deleting documents with values " + origin + " , " + destination + " , " + destination)
+            deletedict = {"OriginName": origin, "DestinationName": destination, "PublishedLineName": line}
             deleted = testcoll.delete_one(deletedict)
             print("Done!")
             # call function 6
@@ -212,7 +212,7 @@ def main():
             upper = x+ 0.001 # upper = x+ 0.01
             lower = x- 0.001 # lower = x -0.01
             
-            result = db.testcoll.count_documents({"VehicleLocation.Latitude":{"$gte":lower, "$lte":upper}});
+            result = db.testcoll.count_documents({"VehicleLocation.Latitude":{"$gte":lower, "$lte":upper}})
             print('number of observations near latitude ' + str(latitude) + ': ' + str(result)) 
 
         elif expression == 'q':
