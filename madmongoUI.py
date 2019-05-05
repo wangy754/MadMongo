@@ -43,7 +43,7 @@ def main():
                            
                            "Enter 14: View history of a given line name \n"
 
-                           "Enter 17: Find the number of observations near a particular latitude \n"
+                           "Enter 15: Find the number of observations near a particular latitude \n"
 
 
                            "Enter q: Exiting\n")
@@ -205,12 +205,15 @@ def main():
                 print("Expected Arrival at: " + str(post["ExpectedArrivalTime"]))
                 i += 1
 
-        elif expression == '17':
-            line_name = input("Enter the published line name of the bus: ")
-            print("Fetching data for latitude " + line_name)
-            result = testcoll.find({"PublishedLineName": line_name}).sort([("RecordedAtTime", -1)])
-            for doc in result:
-                print(doc)
+        elif expression == '15':
+            latitude = input("Enter the latitude: ")
+            print("Fetching data for latitude " + latitude)
+            x = float(latitude)
+            upper = x+ 0.001 # upper = x+ 0.01
+            lower = x- 0.001 # lower = x -0.01
+            
+            result = db.testcoll.count_documents({"VehicleLocation.Latitude":{"$gte":lower, "$lte":upper}});
+            print('number of observations near latitude ' + str(latitude) + ': ' + str(result)) 
 
         elif expression == 'q':
 
