@@ -5,7 +5,7 @@ from pymongo import MongoClient
 def main():
     # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
     # mongos port. Use the port number your mongos is running on
-    client = MongoClient('13.57.183.117', port=27017)
+    client = MongoClient('54.183.206.188', port=27017)
     db = client.BusdataDB
     testcoll = db.NYBusInfo
 
@@ -100,13 +100,21 @@ def main():
 
         elif expression == '6':
             # Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
-            column1 = input("Enter value for column 1: ")
-            column2 = input("Enter value for column 2: ")
-            column3 = input("Enter value for column 3: ")
-            print("Inserting Values " + column1 + " , " + column2 + " , " + column3)
-            insertdict = {"column1": column1, "column2": column2, "column3": column3}
+            obsv_time = input("Recorded at a time: ")
+            direction_ref = input("DirectionRef: ")
+            published_line_name = input("PublishedLineName: ")
+            origin_name = input("OriginName: ")
+            destination = input("DestinationName: ")
+            vehicle_ref = input("VehicleRef ")
+
+            print("Inserting an observation")
+            insertdict = {"RecordedAtTime": obsv_time, "DirectionRef": direction_ref, "PublishedLineName": published_line_name,
+                          "OriginName":origin_name,"DestinationName":destination,"VehicleRef":vehicle_ref}
             inserted = testcoll.insert_one(insertdict)
-            print("Done!")
+            print("Inserted Observation")
+            result = testcoll.find({"PublishedLineName": published_line_name}).sort([("RecordedAtTime", -1)]).limit(1)
+            print(result[0]["PublishedLineName"] + " "+result[0]["RecordedAtTime"] + " "+result[0]["OriginName"]+ " "+
+                  result[0]["DestinationName"])
             # call function 6
 
         elif expression == '7':
@@ -156,27 +164,30 @@ def main():
 
             test_post = testcoll.find_one({"DestinationLat": x, "DestinationLong": y},
                                           {'PublishedLineName': 1, 'OriginName': 1, 'DestinationName': 1})
-            print(test_post)
+            print("Bus/buses ending at latitude " + latitude + " and longitude " + longitude + ":")
+            print("Published Line Name :" + test_post['PublishedLineName']
+                  + " Origin: " + test_post['OriginName'] + " Destination: " + test_post['DestinationName'])
 
         elif expression == '11':
             stop_name = input("Please enter the stop name: ")
             print("Fetching details of the buses passing through the point " + stop_name)
             result = testcoll.distinct("PublishedLineName", {"NextStopPointName": stop_name})
-            print(result)
+            print("The bus/buses passing through the given stop: ")
+            for bus in result:
+                print(bus)
 
         elif expression == '12':
             line_name = input("Enter the published line name of the bus: ")
             print("Fetching the recent location of the bus " + line_name)
             result = testcoll.find({"PublishedLineName": line_name}, {"VehicleLocation": 1}).sort(
                 [("RecordedAtTime", -1)]).limit(1)
-            print(result[0])
+            print("The recent location of the bus "+line_name+" is: "+str(result[0]['VehicleLocation']))
 
         elif expression == '13':
             v_id = input("Enter the Vehicle ID: ")
             print("Fetching the recent location of the bus " + v_id)
             result = testcoll.find({"VehicleRef": v_id}, {"VehicleLocation": 1}).sort([("RecordedAtTime", -1)]).limit(1)
-            print(result[0])
-
+            print("The recent location of the bus with vehicle id: " + v_id + " is: " + str(result[0]['VehicleLocation']))
 
         elif expression == '17':
             line_name = input("Enter the published line name of the bus: ")
