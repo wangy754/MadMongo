@@ -119,8 +119,11 @@ def main():
                   result[0]["DestinationName"])
             # call function 6
 
+
         elif expression == '7':
+
             # Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
+
             column = input("Enter column name: ")
             old = input("Enter old value: ")
             new = input("Enter new value: ")
@@ -128,18 +131,23 @@ def main():
             updatedict = {column: old}
             updatedict2 = {"$set": {column: new}}
             updated = testcoll.update_many(updatedict, updatedict2)
-            print("Done!")
+            print(" Update Done!")
+
             # call function 6
 
+
         elif expression == '8':
+
             # Input: OriginName (string) and DestinationName (string) Output: PublishedLineName (string)
-            column1 = input("Enter value for column 1: ")
-            column2 = input("Enter value for column 2: ")
-            column3 = input("Enter value for column 3: ")
-            print("Deleting documents with values " + column1 + " , " + column2 + " , " + column3)
-            deletedict = {"column1": column1, "column2": column2, "column3": column3}
+
+            origin = input("Enter value for OriginName: ")
+            destination = input("Enter value for DestinationName: ")
+            line = input("Enter value for PublishedLineName: ")
+            print("Deleting documents with values " + origin + " , " + destination + " , " + line)
+            deletedict = {"OriginName": origin, "DestinationName": destination, "PublishedLineName": line}
             deleted = testcoll.delete_one(deletedict)
-            print("Done!")
+            print(" Delete Done!")
+
             # call function 6
 
         elif expression == '9':
