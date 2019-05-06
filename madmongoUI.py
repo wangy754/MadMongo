@@ -5,7 +5,7 @@ import math
 def main():
     # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
     # mongos port. Use the port number your mongos is running on
-    client = MongoClient('52.53.210.160', port=27017)
+    client = MongoClient('54.193.30.217', port=27017)
     db = client.BusdataDB
     testcoll = db.NYBusInfo
 
@@ -203,12 +203,16 @@ def main():
             LineName = input("Enter Line Name: ")
             NumEntries = int(input("Enter number of entries to view: "))
             print("Getting history for " + LineName)
-            test_post = testcoll.find({'PublishedLineName':LineName},{'RecordedAtTime':1,'VehicleLocationLatitude':1,'VehicleLocationLongitude':1,'NextStopPointName':1,'ExpectedArrivalTime':1}).sort('RecordedAtTime',pymongo.DESCENDING).limit(NumEntries)
+            #test_post = testcoll.find({'PublishedLineName':LineName},{'RecordedAtTime':1,'VehicleLocation.Latitude':1,'VehicleLocation.Longitude':1,'NextStopPointName':1,'ExpectedArrivalTime':1}).sort('RecordedAtTime',pymongo.DESCENDING).limit(NumEntries)
+            test_post = testcoll.find({'PublishedLineName': LineName},{'RecordedAtTime': 1, 'VehicleLocation': 1,
+                                       'NextStopPointName': 1,
+                                       'ExpectedArrivalTime': 1}).sort('RecordedAtTime', pymongo.DESCENDING).limit(NumEntries)
             i = 1
+
             for post in test_post:
                 print("Entry " + str(i))
                 print("Recorded at: " + post["RecordedAtTime"])
-                print("Located at: (" + post["VehicleLocationLatitude"] + "," + post["VehicleLocationLongitude"] + ")")
+                print("Located at: (" + str(post["VehicleLocation"]["Latitude"]) + "," + str(post["VehicleLocation"]["Longitude"]) + ")")
                 print("Next Stop at: " + post["NextStopPointName"])
                 print("Expected Arrival at: " + str(post["ExpectedArrivalTime"]))
                 i += 1
