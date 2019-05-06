@@ -132,7 +132,7 @@ def main():
             updatedict2 = {"$set": {column: new}}
             updated = testcoll.update_many(updatedict, updatedict2)
             print(" Update Done!")
-
+            print("Updated " + updated.modified_count + " records.")
             # call function 6
 
 
@@ -145,9 +145,9 @@ def main():
             line = input("Enter value for PublishedLineName: ")
             print("Deleting documents with values " + origin + " , " + destination + " , " + line)
             deletedict = {"OriginName": origin, "DestinationName": destination, "PublishedLineName": line}
-            deleted = testcoll.delete_one(deletedict)
+            deleted = testcoll.delete_many(deletedict)
             print(" Delete Done!")
-
+            print("Deleted " + deleted.deleted_count + " records.")
             # call function 6
 
         elif expression == '9':
