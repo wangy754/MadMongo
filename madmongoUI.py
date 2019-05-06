@@ -1,11 +1,11 @@
 import pymongo
 from pymongo import MongoClient
-
+import math
 
 def main():
     # Replace the '54.219.174.228' with the public ip of the primary machine of your AWS setup. 27017 is the default
     # mongos port. Use the port number your mongos is running on
-    client = MongoClient('54.183.206.188', port=27017)
+    client = MongoClient('52.53.210.160', port=27017)
     db = client.BusdataDB
     testcoll = db.NYBusInfo
 
@@ -207,13 +207,33 @@ def main():
 
         elif expression == '15':
             latitude = input("Enter the latitude: ")
-            print("Fetching data for latitude " + latitude)
-            x = float(latitude)
-            upper = x+ 0.001 # upper = x+ 0.01
-            lower = x- 0.001 # lower = x -0.01
+            longitude = input("Enter the longitude: ")
+
+            search_range = input("Enter the search range in meters: ")
+            #print("Fetching data for latitude " + latitude)
+            lat1 = float(latitude)
+            long1 = float(longitude)
+
+            # 1km in degree = 1 / 111.32 km = 0.0089
+            # 1m in degree = 0.0089 / 1000 = 0.0000089
+
+            coef = float(search_range) * 0.0000089
+
+            new_lat = float(lat1 + coef)
+            new_long = float(long1 + coef / math.cos(lat1 * 0.018))
+            print("Start Range Latitude: "+ str(lat1) + " Longitude: "+str(long1))
+            print("End Range Latitude: "+ str(new_lat) + " Longitude: "+str(new_long))
+            """
+            #upper = x+ 0.001 # upper = x+ 0.01
+            #lower = x- 0.001 # lower = x -0.01
             
-            result = db.testcoll.count_documents({"VehicleLocation.Latitude":{"$gte":lower, "$lte":upper}});
-            print('number of observations near latitude ' + str(latitude) + ': ' + str(result)) 
+            """
+
+            result = testcoll.count_documents({'$and': [{"VehicleLocation.Longitude": {'$gte':long1,'$lte':new_long}},
+                                                {"VehicleLocation.Latitude": {'$gte': lat1, '$lte': new_lat}}]})
+
+
+            print("Number of observations within " + str(search_range) + " meters of given location : " +  str(result))
 
         elif expression == 'q':
 
